@@ -11,10 +11,14 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
 import java.nio.file.StandardOpenOption;
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+//import oracle.jdbc.driver.OracleDriver;
 
 /**
  *
@@ -223,10 +227,39 @@ public class FormMain extends javax.swing.JFrame {
             // TODO add your handling code here:
             String DBName = readFile(FileNameDBName, StandardCharsets.UTF_8);
             String DBHost = readFile(FileNameDBHost, StandardCharsets.UTF_8);
-            Log("Выполняем подключение к " + DBHost + " к БД " + DBName + " под пользователем:  " + jTextField1.getText());
+            
+            String username = jTextField1.getText();
+            String password = jPasswordField1.getText();
+            
+            Log("Выполняем подключение к " + DBHost + " к БД " + DBName + " под пользователем:  " + username);
+            
+            
+            try {
+                Class.forName("oracle.jdbc.driver.OracleDriver");
+            } catch (ClassNotFoundException ex) {
+                Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
+                Log(ex.getMessage());
+            }
+            Connection connection = null;
+            try {
+                connection = DriverManager.getConnection("jdbc:oracle:thin:@" + DBHost + ":1521:" + DBName, username, password);
+            } catch (SQLException ex) {
+                Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
+                Log(ex.getMessage());
+            }
+            connection.close();
+   
         } catch (IOException ex) {
             Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
+            Log(ex.getMessage());
+        } catch (SQLException ex) {
+            Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
+            Log(ex.getMessage());
         }
+        
+        Log("Соединение установлено");
+        
+        jLabel3.setText("Соединение установлено");                
     }//GEN-LAST:event_jButton2ActionPerformed
 
     /**
