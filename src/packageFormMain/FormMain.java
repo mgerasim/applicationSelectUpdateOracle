@@ -5,6 +5,7 @@
  */
 package packageFormMain;
 
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
@@ -205,6 +206,19 @@ public class FormMain extends javax.swing.JFrame {
         try {
             // TODO add your handling code here
             
+            // Автоматическое создание конфигурационных файлов и файла лога 
+            // если они не существуют
+            File LogFile = new File("Log.txt");            
+            LogFile.createNewFile(); 
+            File DBHostFile = new File(FileNameDBHost);
+            DBHostFile.createNewFile(); 
+            File DBNameFile = new File(FileNameDBName);
+            DBNameFile.createNewFile(); 
+            File QueryselectFile = new File(FileNameQueryselect);
+            QueryselectFile.createNewFile(); 
+            File QueryupdateFile = new File(FileNameQueryupdate);
+            QueryupdateFile.createNewFile(); 
+            
             Log("Инициализация программы");
             
             String Queryselect = readFile(FileNameQueryselect, StandardCharsets.UTF_8);
@@ -239,6 +253,7 @@ public class FormMain extends javax.swing.JFrame {
             } catch (ClassNotFoundException ex) {
                 Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
                 Log(ex.getMessage());
+                jLabel3.setText(ex.getMessage()); 
             }
             Connection connection = null;
             try {
@@ -246,15 +261,21 @@ public class FormMain extends javax.swing.JFrame {
             } catch (SQLException ex) {
                 Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
                 Log(ex.getMessage());
+                jLabel3.setText(ex.getMessage()); 
+                return;
             }
             connection.close();
    
         } catch (IOException ex) {
             Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
             Log(ex.getMessage());
+            jLabel3.setText(ex.getMessage()); 
+            return;
         } catch (SQLException ex) {
             Logger.getLogger(FormMain.class.getName()).log(Level.SEVERE, null, ex);
-            Log(ex.getMessage());
+            Log(ex.getMessage());      
+            jLabel3.setText(ex.getMessage()); 
+            return;
         }
         
         Log("Соединение установлено");
